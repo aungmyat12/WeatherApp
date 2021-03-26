@@ -1,51 +1,19 @@
+import { useState } from 'react'
 import './App.css'
-import { useState, useEffect } from 'react'
-import axios from 'axios'
+import { useSelector, useDispatch } from 'react-redux'
+import Nav from './Nav'
 
 function App() {
-  const [weather, setWeather] = useState(null)
-  const [input, setInput] = useState('Myanmar')
-  useEffect(() => {
-    axios
-      .get(
-        `http://api.weatherapi.com/v1/current.json?key=${process.env.REACT_APP_WEATHER_API}&q=Myanmar&aqi=no`
-      )
-      .then((data) => {
-        setWeather(data.data)
-      }).catch(error => console.log(error))
-  }, [])
-  const searchWeather = () => {
-    console.log(input);
-
-    axios
-      .get(
-        `http://api.weatherapi.com/v1/current.json?key=${process.env.REACT_APP_WEATHER_API}&q=${input}&aqi=no`
-      )
-      .then((data) => setWeather(data.data))
-  }
-  const weatherInput = (e) => {
-    console.log(input);
-    setInput(e.target.value)
-  }
+  const counter = useSelector(state => state.counter)
+  const signedIn = useSelector(state => state.isLogged)
+  const dispatch = useDispatch()
+  console.log(dispatch);
   return (
     <div className="App">
-      {weather && (
-        <div>
-          <div className="search">
-            <input type="text" onChange={weatherInput} />
-            <button onClick={searchWeather}>Search</button>
-          </div>
-          <div className="weather-info">
-            <h1>{weather.location.name}</h1>
-            <h2>{weather.location.region}</h2>
-            <div className="condition">
-              <h3>{weather.current.condition.text}</h3>
-              <img src={weather.current.condition.icon} alt="" />
-              <h3>{weather.current.temp_c}Celsius</h3>
-            </div>
-          </div>
-        </div>
-      )}
+      <Nav />
+      <h1>Counter: { counter }</h1>
+      <button onClick={() => dispatch({ type: 'INCREMENT' })}>Increment</button>
+      {signedIn && <h1>Movie List</h1>}
     </div>
   )
 }
